@@ -157,10 +157,10 @@
 
 	    init: function init() {
 
-	        // this.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
+	        this.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
 	        // this.scale.forceOrientation(false, true);
-	        console.log(this.scale.screenOrientation);
-	        console.log(this.scale.isGamePortrait);
+	        // console.log(this.scale.screenOrientation);
+	        // console.log(this.scale.isGamePortrait);
 	    },
 
 	    preload: function preload() {
