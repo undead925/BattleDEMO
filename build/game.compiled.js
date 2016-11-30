@@ -101,16 +101,18 @@
 	        // this.preloadBar = this.add.sprite(120, 260, 'preload');
 	        // this.load.setPreloadSprite(this.preloadBar);
 
-	        this.load.baseURL = './';
+	        this.load.baseURL = './images/';
 
-	        this.load.image('map', 'images/maps/map1.jpg');
-	        this.load.image('controlbar', 'images/ui/controlbar.bmp');
-	        this.load.image('attributepanel', 'images/ui/attributepanel.bmp');
+	        this.load.image('map', 'maps/map1.jpg');
+	        this.load.image('controlbar', 'ui/controlbar.jpg');
+	        this.load.image('attributepanel', 'ui/attributepanel.jpg');
 
-	        this.load.spritesheet('waitbtn', 'images/ui/wait.jpg', 48, 36, 4);
-	        this.load.spritesheet('defendbtn', 'images/ui/defend.jpg', 48, 36, 4);
-	        this.load.spritesheet('check6432btn', 'images/ui/check6432.jpg', 64, 32, 4);
-	        this.load.spritesheet('dragonFly', 'images/sprites/dragonfly.png', 160, 160, 54);
+	        this.load.spritesheet('waitbtn', 'ui/wait.jpg', 48, 36, 4);
+	        this.load.spritesheet('defendbtn', 'ui/defend.jpg', 48, 36, 4);
+	        this.load.spritesheet('check6432btn', 'ui/check6432.jpg', 64, 32, 4);
+	        this.load.spritesheet('dragonFly', 'sprites/dragonfly.png', 160, 160, 54);
+	        // this.load.spritesheet('mouseStyle', 'icon/sprites/mouse.png', 36, 36);
+	        this.load.atlas('mouseStyle', 'icon/sprites/mouse1.png', 'icon/sprites/mouse1.json');
 	    },
 
 	    create: function create() {
@@ -214,6 +216,20 @@
 	        this.hexagonGridsInit(102, 82, 44, 10, 32, 15, 11);
 	        this.hexagonGraphicsInit();
 	        this.unitCycleSetInit();
+
+	        this.uiGroup = this.add.group();
+	        this.uiGroup.add(this.controlbar);
+	        this.uiGroup.add(this.attributepanel);
+
+	        this.game.canvas.className = 'mouse-hide';
+	        this.mouse = this.add.sprite(0, 0, 'mouseStyle', 0);
+	        this.mouse.mouseOffsetX = 0;
+	        this.mouse.mouseOffsetY = 0;
+
+	        this.input.addMoveCallback(function (point, x, y) {
+	            this.mouse.x = x + this.mouse.mouseOffsetX;
+	            this.mouse.y = y + this.mouse.mouseOffsetY;
+	        }, this);
 
 	        var unit1Attr = {
 
@@ -383,6 +399,8 @@
 	                grids[x][y].path = [];
 	                grids[x][y].step = -1;
 	                grids[x][y].direction = 1;
+	                grids[x][y].mouseClass = 'mouse02';
+
 	                grids[x][y].centerPoint = new Phaser.Point(px + w * x - y % 2 * w / 2, py + (h1 + h2) * y + h1 + h2 / 2);
 
 	                for (var _i = 0; _i < 6; _i++) {
@@ -414,7 +432,7 @@
 
 
 	        //normalGrid Texture generate
-	        grids.graphics = this.add.graphics(0, 0);
+	        grids.graphics = this.add.graphics(0, 0, this.grids);
 	        grids.graphics.lineStyle(1, 0x8b883b);
 	        grids.graphics.beginFill(0x000000, 0);
 	        grids.graphics.drawPolygon(grids[0][0].polygon.points);
@@ -593,7 +611,7 @@
 	                    loopGrid.step = -1;
 	                    loopGrid.path = [];
 	                    loopGrid.direction = this.selectUnit.camp;
-	                    loopGrid.mouseClass = 'mouse2';
+	                    loopGrid.mouseClass = 'mouse02';
 
 	                    loopGrid.sprite.setTexture(this.grids.graphics.texture1);
 	                }
@@ -601,7 +619,7 @@
 	                //reset act grid
 	                if (loopGrid.unit) {
 	                    for (var i = 0; i < 6; i++) {
-	                        loopGrid[i].mouseClass = 'mouse2';
+	                        loopGrid[i].mouseClass = 'mouse02';
 	                    }
 	                }
 	            }
@@ -664,7 +682,7 @@
 
 	                this.hoverUnit = null;
 
-	                this.setMouse('mouse1');
+	                this.setMouse('mouse01');
 	            }
 	        }
 	    },
@@ -680,7 +698,7 @@
 
 	    mouseChange: function mouseChange() {
 
-	        this.setMouse('mouse1');
+	        this.setMouse('mouse01');
 
 	        if (this.grids.isHover) {
 	            this.setMouse(this.grids.hoverPosition.grid.mouseClass);
@@ -754,7 +772,92 @@
 	    },
 
 	    setMouse: function setMouse(mouseClass) {
-	        this.game.canvas.className = mouseClass;
+	        // switch (mouseClass){
+	        //     case 'mouse01':
+	        //         this.mouse.mouseOffsetX = 0;
+	        //         this.mouse.mouseOffsetY = 0;
+	        //         break;
+	        //     case 'mouse02':
+	        //         this.mouse.mouseOffsetX = -12;
+	        //         this.mouse.mouseOffsetY = -12;
+	        //         break;
+	        //     case 'mouse03':
+	        //         this.mouse.mouseOffsetX = -10;
+	        //         this.mouse.mouseOffsetY = -10;
+	        //         break;
+	        //     case 'mouse04':
+	        //         this.mouse.mouseOffsetX = -10;
+	        //         this.mouse.mouseOffsetY = -10;
+	        //         break;
+	        //     case 'mouse05':
+	        //         this.mouse.mouseOffsetX = -8;
+	        //         this.mouse.mouseOffsetY = -12;
+	        //         break;
+	        //     case 'mouse06':
+	        //         this.mouse.mouseOffsetX = 0;
+	        //         this.mouse.mouseOffsetY = -20;
+	        //         break;
+	        //     case 'mouse07':
+	        //         this.mouse.mouseOffsetX = 0;
+	        //         this.mouse.mouseOffsetY = -6;
+	        //         break;
+	        //     case 'mouse08':
+	        //         this.mouse.mouseOffsetX = 0;
+	        //         this.mouse.mouseOffsetY = 0;
+	        //         break;
+	        //     case 'mouse09':
+	        //         this.mouse.mouseOffsetX = -20;
+	        //         this.mouse.mouseOffsetY = 0;
+	        //         break;
+	        //     case 'mouse10':
+	        //         this.mouse.mouseOffsetX = -31;
+	        //         this.mouse.mouseOffsetY = -6;
+	        //         break;
+	        //     case 'mouse11':
+	        //         this.mouse.mouseOffsetX = -20;
+	        //         this.mouse.mouseOffsetY = -20;
+	        //         break;
+	        // }
+
+	        // this.mouse.x = this.input.x + this.mouse.mouseOffsetX;
+	        // this.mouse.y = this.input.y + this.mouse.mouseOffsetY; 
+
+	        switch (mouseClass) {
+	            case 'mouse01':
+	                this.mouse.anchor.set(0, 0);
+	                break;
+	            case 'mouse02':
+	                this.mouse.anchor.set(0.5, 0.5);
+	                break;
+	            case 'mouse03':
+	                this.mouse.anchor.set(0.5, 0.5);
+	                break;
+	            case 'mouse04':
+	                this.mouse.anchor.set(0.5, 0.5);
+	                break;
+	            case 'mouse05':
+	                this.mouse.anchor.set(0.5, 0.5);
+	                break;
+	            case 'mouse06':
+	                this.mouse.anchor.set(0, 1);
+	                break;
+	            case 'mouse07':
+	                this.mouse.anchor.set(0, 0.5);
+	                break;
+	            case 'mouse08':
+	                this.mouse.anchor.set(0, 0);
+	                break;
+	            case 'mouse09':
+	                this.mouse.anchor.set(1, 0);
+	                break;
+	            case 'mouse10':
+	                this.mouse.anchor.set(1, 0.5);
+	                break;
+	            case 'mouse11':
+	                this.mouse.anchor.set(1, 1);
+	                break;
+	        }
+	        this.mouse.frameName = mouseClass;
 	    },
 
 	    openAttrPanel: function openAttrPanel(unit) {
@@ -762,8 +865,8 @@
 	        this.grids.focus = false;
 	        this.controlbar.actionGroup.callAll('disable');
 	        this.attributepanel.visible = true;
-	        this.attributepanel.bringToTop();
-	        this.setMouse('mouse1');
+	        // this.attributepanel.bringToTop();
+	        this.setMouse('mouse01');
 	        this.attributepanel.position.set(100, 100);
 
 	        this.attributepanel.unitName.setText(unit.unitAttr.name);
@@ -1309,7 +1412,7 @@
 	        point.grid.step = 0;
 	        point.grid.direction = this.camp == 1 ? 1 : 4;
 	        point.grid.sprite.setTexture(this.state.grids.graphics.texture3);
-	        point.grid.mouseClass = 'mouse5';
+	        point.grid.mouseClass = 'mouse05';
 
 	        for (var step = 1; step <= this.speed; step++) {
 
@@ -1337,7 +1440,7 @@
 	                    if (nextGrid.unit) {
 	                        if (this.camp === nextGrid.unit.camp) {
 	                            nextGrid.step = -2;
-	                            nextGrid.mouseClass = 'mouse5';
+	                            nextGrid.mouseClass = 'mouse05';
 	                        } else {
 	                            nextGrid.step = -3;
 	                            nextGrid.sprite.setTexture(this.state.grids.graphics.texture3);
@@ -1348,7 +1451,7 @@
 	                        nextGrid.path = [].concat(_toConsumableArray(parentGrid.path));
 	                        nextGrid.path.unshift(nextGrid.gridPosition);
 	                        nextGrid.direction = direction;
-	                        nextGrid.mouseClass = 'mouse3';
+	                        nextGrid.mouseClass = 'mouse03';
 
 	                        nextGrid.sprite.setTexture(this.state.grids.graphics.texture3);
 
@@ -1426,9 +1529,11 @@
 	                for (var j = 0; j < 6; j++) {
 	                    var aroundGrid = loopUnit.gridPosition.getAroundGrid(j);
 	                    if (aroundGrid && aroundGrid.step > -1) {
-	                        loopUnit.parent[j].mouseClass = 'mouse' + (j + 6);
+	                        var str = j + 6;
+	                        str = str < 10 ? '0' + str : '' + str;
+	                        loopUnit.parent[j].mouseClass = 'mouse' + str;
 	                    } else {
-	                        loopUnit.parent[j].mouseClass = 'mouse2';
+	                        loopUnit.parent[j].mouseClass = 'mouse02';
 	                    }
 	                }
 	            }
@@ -1539,10 +1644,10 @@
 	                            if (this === loopGrid.unit) {
 	                                loopGrid.step = 0;
 	                                loopGrid.sprite.setTexture(this.state.grids.graphics.texture3);
-	                                loopGrid.mouseClass = 'mouse5';
+	                                loopGrid.mouseClass = 'mouse05';
 	                            } else {
 	                                loopGrid.step = -2;
-	                                loopGrid.mouseClass = 'mouse5';
+	                                loopGrid.mouseClass = 'mouse05';
 	                            }
 	                        } else {
 	                            loopGrid.step = -3;
@@ -1552,7 +1657,7 @@
 	                        loopGrid.step = 1;
 	                        loopGrid.path = [loopGrid.gridPosition];
 	                        loopGrid.sprite.setTexture(this.state.grids.graphics.texture3);
-	                        loopGrid.mouseClass = 'mouse4';
+	                        loopGrid.mouseClass = 'mouse04';
 	                    }
 	                }
 	            }
